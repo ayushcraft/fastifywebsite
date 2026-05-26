@@ -28,6 +28,13 @@ export default function LessonViewer({ lesson, onComplete }) {
         return <CodeBlock key={i} code={block.code} lang={block.lang} />;
       case 'diagram':
         return <Diagram key={i} alt={block.alt} label={block.label} />;
+      case 'note':
+        return (
+          <div key={i} className={`note ${block.variant || 'info'}`}>
+            <strong className="note-label">{block.label || 'Note'}:</strong>{' '}
+            {block.text}
+          </div>
+        );
       default:
         return null;
     }

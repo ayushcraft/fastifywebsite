@@ -8,7 +8,7 @@ export const lessons = [
     content: [
       {
         type: 'text',
-        text: 'Every application you use — from Instagram to Google Docs — has two sides: the frontend (what you see) and the backend (what happens behind the scenes). Understanding backend development is essential for building complete, functional applications.'
+        text: 'Every application you use — from Instagram to Google Docs — has two sides: the frontend (what you see and touch) and the backend (everything that happens behind the scenes). Frontend code runs in the user\'s browser. Backend code runs on remote machines called servers. Understanding backend development transforms you from someone who can build webpages into someone who can build entire web applications.'
       },
       {
         type: 'heading',
@@ -16,7 +16,21 @@ export const lessons = [
       },
       {
         type: 'text',
-        text: 'A server is a computer program or device that provides functionality to other programs called "clients." Think of it like a restaurant: the kitchen (server) prepares meals based on orders from customers (clients) via waiters (HTTP requests). The server listens for incoming requests on a specific port (like a restaurant door number) and responds with the requested data.'
+        text: 'A server is a computer program (or physical machine) that waits for incoming requests and sends back responses. The word "server" literally means "one that serves" — it serves data to anyone who asks.'
+      },
+      {
+        type: 'text',
+        text: 'Think of a restaurant. The kitchen (server) doesn\'t walk up to tables asking what people want. Instead, it listens for orders coming from waiters (HTTP requests). Each order specifies exactly what the customer wants, and the kitchen prepares the right dish (response). The restaurant has a specific street address (IP address) with numbered doors for different types of service (ports).'
+      },
+      {
+        type: 'note',
+        label: 'Why understanding ports matters',
+        variant: 'info',
+        text: 'Ports are like doors on a building. A single server can run many services simultaneously — a web server on port 80, a database on port 5432, an email server on port 25. Each service listens on its own port. This is why URLs sometimes include port numbers (like localhost:3000) — port 3000 is where your Fastify application is listening.'
+      },
+      {
+        type: 'text',
+        text: 'Behind the scenes, this communication happens over TCP/IP — the Internet\'s fundamental protocol suite. TCP (Transmission Control Protocol) guarantees that data arrives complete and in order. When your browser types a URL, it opens a TCP connection to the server\'s IP address on a specific port, sends an HTTP message over that connection, and waits for the response.'
       },
       {
         type: 'diagram',
@@ -29,32 +43,38 @@ export const lessons = [
       },
       {
         type: 'text',
-        text: 'HTTP (Hypertext Transfer Protocol) is the foundation of data communication on the web. Every interaction between a client and server follows a request-response pattern:'
+        text: 'HTTP (Hypertext Transfer Protocol) is the language that browsers and servers speak to each other. It was invented by Tim Berners-Lee in 1989 as part of the World Wide Web project. Every single thing you do on the web — loading a page, submitting a form, watching a video — happens through HTTP requests and responses.'
       },
       {
         type: 'text',
-        text: 'An HTTP request contains:'
+        text: 'An HTTP request is a carefully structured message containing:'
       },
       {
         type: 'list',
         items: [
-          'Method — the action to perform (GET, POST, PUT, DELETE, etc.)',
-          'URL — the address of the resource (e.g., /api/users/42)',
-          'Headers — metadata like content type and authentication tokens',
-          'Body — the data being sent (for POST/PUT requests)'
+          'Method — the verb (GET = read, POST = create, PUT = replace, PATCH = update partially, DELETE = remove)',
+          'URL/Path — the specific resource being addressed (e.g., /api/users/42 targets user #42)',
+          'Headers — key-value metadata: what format the client accepts, authentication tokens, the type of content being sent, caching directives',
+          'Body — the actual data payload (only present for POST, PUT, and PATCH methods)'
         ]
       },
       {
         type: 'text',
-        text: 'An HTTP response contains:'
+        text: 'The server reads this message and sends back an HTTP response:'
       },
       {
         type: 'list',
         items: [
-          'Status Code — indicates result (200 OK, 404 Not Found, 500 Server Error)',
-          'Headers — response metadata',
-          'Body — the data returned (JSON, HTML, plain text, etc.)'
+          'Status Code — a 3-digit number in defined ranges: 2xx = success, 3xx = redirection, 4xx = client error (you messed up), 5xx = server error (we messed up)',
+          'Headers — response metadata: content type, content length, caching instructions, cookies to set',
+          'Body — the actual data being returned (HTML for pages, JSON for APIs, binary for files)'
         ]
+      },
+      {
+        type: 'note',
+        label: 'Why HTTP is stateless',
+        variant: 'info',
+        text: 'HTTP is deliberately "stateless" — each request is completely independent. The server doesn\'t remember you between requests. This was an intentional design choice: statelessness makes servers simpler, more scalable, and easier to cache. When you need state (like "keep me logged in"), we build it on top using cookies, tokens, or sessions — but HTTP itself remains stateless underneath.'
       },
       {
         type: 'heading',
@@ -62,21 +82,28 @@ export const lessons = [
       },
       {
         type: 'text',
-        text: 'An API (Application Programming Interface) is a set of rules that allows programs to talk to each other. In web development, a REST API defines endpoints (URLs) that clients can call to create, read, update, or delete data — known as CRUD operations.'
+        text: 'An API (Application Programming Interface) is a contract between two pieces of software. It says: "If you send me a request that looks like this, I promise to send you back a response that looks like that." APIs are the reason your weather app can show the forecast (it calls a weather API), your payment goes through (it calls a payment processor\'s API), and ChatGPT can answer your questions (you\'re using an API right now).'
       },
       {
         type: 'text',
-        text: 'REST (Representational State Transfer) is the most common architectural style for designing networked applications. It uses standard HTTP methods:'
+        text: 'In web development, the most common API style is REST (Representational State Transfer). REST uses standard HTTP methods mapped to CRUD operations (Create, Read, Update, Delete):'
       },
       {
         type: 'list',
         items: [
-          'GET /users → Retrieve all users',
-          'GET /users/:id → Retrieve a specific user',
-          'POST /users → Create a new user',
-          'PUT /users/:id → Update an existing user',
-          'DELETE /users/:id → Delete a user'
+          'GET /users → Retrieve a list of all users',
+          'GET /users/:id → Retrieve one specific user by their ID',
+          'POST /users → Create a brand new user (data sent in the request body)',
+          'PUT /users/:id → Completely replace an existing user\'s data',
+          'PATCH /users/:id → Partially update specific fields of an existing user',
+          'DELETE /users/:id → Remove a user from the system'
         ]
+      },
+      {
+        type: 'note',
+        label: 'Why REST became dominant',
+        variant: 'tip',
+        text: 'REST won over alternatives like SOAP (an older, XML-heavy protocol) because it leverages HTTP itself — the same protocol browsers already use. This means REST APIs work with every programming language, every browser, and every HTTP client library ever written. No special software needed — just HTTP, which everything already understands.'
       },
       {
         type: 'heading',
@@ -84,33 +111,54 @@ export const lessons = [
       },
       {
         type: 'text',
-        text: 'A database is an organized collection of data stored and accessed electronically. Backend applications use databases to persist information beyond a single request. Common types include:'
+        text: 'A database is an organized collection of data that persists even when the server restarts. Without a database, every time your server restarted, it would forget everything — every user, every post, every transaction. Databases solve the persistence problem.'
+      },
+      {
+        type: 'text',
+        text: 'There are several major categories of databases, each designed for different use cases:'
       },
       {
         type: 'list',
         items: [
-          'Relational databases (PostgreSQL, MySQL) — data organized in tables with rows and columns, using SQL for queries',
-          'Document databases (MongoDB) — data stored as flexible JSON-like documents',
-          'Key-value stores (Redis) — simple key-to-value mappings, often used for caching'
+          'Relational databases (PostgreSQL, MySQL, SQLite) — store data in tables with rows and columns, like a spreadsheet. Tables can reference each other through foreign keys. Queried using SQL (Structured Query Language). They enforce strict schemas — every row must have the same columns. This rigidity is a feature: it prevents bad data from entering the system.',
+          'Document databases (MongoDB, CouchDB) — store data as flexible JSON-like documents. Each document can have different fields. No strict schema enforcement. Great for rapidly evolving data models where flexibility matters more than consistency.',
+          'Key-value stores (Redis, Memcached) — the simplest database: you give it a key, it gives you back a value. Extremely fast (microsecond response times) because data lives entirely in RAM. Used primarily for caching, session storage, and real-time features.'
         ]
       },
       {
         type: 'text',
-        text: 'The backend acts as an intermediary between the client and the database — it validates requests, applies business logic, queries the database, and returns formatted responses.'
+        text: 'The backend sits between the client and the database. It never lets clients talk to the database directly — that would be a massive security hole. Instead, the backend validates every request, applies business rules, queries the database safely, and returns only what the client is allowed to see.'
+      },
+      {
+        type: 'note',
+        label: 'Why direct database access is dangerous',
+        variant: 'warning',
+        text: 'If you let a browser talk directly to your database, a malicious user could delete all your data with a single request, steal other users\' private information, or bypass any business rules you\'ve set up. The backend acts as a security guard — it checks every request, verifies permissions, and only allows safe operations through.'
       },
       {
         type: 'heading',
         text: 'Why Do We Need a Backend?'
       },
       {
+        type: 'text',
+        text: 'It\'s common for beginners to ask: "Can\'t I just do everything in the frontend?" It\'s a fair question. Here\'s why the answer is no — every serious application needs a backend:'
+      },
+      {
         type: 'list',
         items: [
-          'Security — keep sensitive logic and database credentials hidden from users',
-          'Data persistence — store data permanently, not just in browser memory',
-          'Authentication — verify user identity before granting access',
-          'Business logic — enforce rules that should never live on the client side',
-          'Performance — offload heavy computation to servers, keeping frontend fast'
+          'Security — Sensitive operations (charging credit cards, verifying passwords, accessing user data) must happen on machines you control. Frontend code is 100% visible to anyone who opens the browser\'s developer tools. Your database password, your API keys, your business logic — if it lives in the frontend, it\'s public.',
+          'Data Persistence — Browser storage (localStorage, sessionStorage) is wiped when users clear their data or switch devices. A database on a server persists indefinitely, accessible from any device.',
+          'Authentication — "Is this person really who they claim to be?" That question requires checking passwords, tokens, and session data — all of which must be stored on a secure server, never in the browser.',
+          'Business Logic — Rules like "a user can only have 3 active subscriptions" or "apply a 10% discount on orders over $100" must be enforced on the server. If these rules live in the frontend only, anyone can modify the JavaScript and bypass them.',
+          'Shared State — When multiple users interact (chat apps, multiplayer games, collaborative editing), the server is the single source of truth that keeps everyone in sync.',
+          'Performance — Heavy computation (image processing, data analysis, machine learning) belongs on powerful servers, not on users\' phones and laptops.'
         ]
+      },
+      {
+        type: 'note',
+        label: 'The frontend-backend boundary',
+        variant: 'tip',
+        text: 'A useful mental model: the frontend is for presentation and user interaction. The backend is for authority and persistence. Never trust data that comes from the frontend — always validate on the server. Never put secrets in the frontend — they\'re not secret there. This principle will save you from countless security disasters.'
       }
     ],
     quiz: [
@@ -150,67 +198,95 @@ export const lessons = [
     content: [
       {
         type: 'text',
-        text: 'Fastify is a high-performance web framework for Node.js, designed with a focus on speed, low overhead, and developer experience. It provides a powerful plugin architecture, schema-based validation, and excellent logging capabilities out of the box.'
-      },
-      {
-        type: 'heading',
-        text: 'Framework vs Runtime'
+        text: 'Fastify is a high-performance web framework for Node.js. But that sentence alone doesn\'t explain why it matters. Let\'s unpack it: in the Node.js ecosystem, there are dozens of web frameworks. Each makes different tradeoffs. Fastify was created by Matteo Collina and Tomas Della Vedova (core Node.js contributors) to answer a specific question: "What if a framework could be both the fastest AND the most developer-friendly?"'
       },
       {
         type: 'text',
-        text: 'Node.js is a JavaScript runtime — it lets you run JavaScript on a server. A framework like Fastify sits on top of Node.js and provides structure, utilities, and conventions to build web applications efficiently. Without a framework, you would need to manually:'
+        text: 'Fastify provides a powerful plugin architecture, schema-based validation, and excellent logging capabilities — all while being one of the fastest frameworks in any language. Companies like Microsoft, NASA, and BBC use Fastify in production because it scales to millions of requests without falling over.'
+      },
+      {
+        type: 'note',
+        label: 'Why "Fastify" instead of just optimizing Express?',
+        variant: 'info',
+        text: 'The creators tried to optimize Express for years. They eventually realized that Express\'s architecture — particularly its middleware chain and lack of schema awareness — fundamentally limits performance. Fastify was a clean-slate design: every internal decision was made with performance as a first-class constraint. The result is a framework that can handle ~65,000 requests/second on modest hardware versus Express\'s ~15,000. That\'s a 4x difference in throughput — meaning you need 4x fewer servers to handle the same traffic.'
+      },
+      {
+        type: 'heading',
+        text: 'Framework vs Runtime: The Crucial Distinction'
+      },
+      {
+        type: 'text',
+        text: 'Node.js is a JavaScript runtime — it\'s the engine that executes your JavaScript code. Fastify is a framework — it\'s a set of patterns and utilities built on top of that engine. Understanding this distinction is critical because it explains what you get for free and what you\'d have to build yourself.'
+      },
+      {
+        type: 'text',
+        text: 'Without any framework, building a web server in raw Node.js requires you to manually:'
       },
       {
         type: 'list',
         items: [
-          'Parse incoming HTTP requests byte by byte',
-          'Route requests to the correct handler based on URL and method',
-          'Serialize response data into proper HTTP responses',
-          'Handle errors, validation, and logging yourself'
+          'Parse raw HTTP request bytes into meaningful data structures (headers, body, URL)',
+          'Build a routing table to match incoming URLs to the right handler functions',
+          'Handle URL parameters (/users/:id needs to extract "id" from the URL)',
+          'Parse query strings (?page=1&limit=10) into usable key-value objects',
+          'Parse request bodies — which arrive as streams — and handle different content types (JSON, form data, multipart)',
+          'Serialize response data into properly formatted HTTP responses with correct headers',
+          'Handle errors gracefully without crashing the entire server process',
+          'Manage CORS headers, authentication, rate limiting, and dozens of other cross-cutting concerns'
         ]
       },
       {
         type: 'text',
-        text: 'Fastify handles all of this for you, letting you focus on your application logic.'
+        text: 'Fastify handles all of this for you, and does it faster than you could do it yourself. Each of these features represents hundreds of lines of carefully optimized code that you don\'t have to write, test, or maintain.'
       },
       {
         type: 'heading',
-        text: 'Key Characteristics'
-      },
-      {
-        type: 'list',
-        items: [
-          'Extremely fast — can handle tens of thousands of requests per second',
-          'Plugin-based architecture — everything is a plugin, making code modular and reusable',
-          'Schema-based validation — define input/output shapes and Fastify validates automatically',
-          'First-class TypeScript support — built with TypeScript, provides excellent type inference',
-          'Rich ecosystem — official plugins for authentication, CORS, rate limiting, database integration',
-          'Detailed logging — built-in Pino logger for structured, high-performance logging'
-        ]
-      },
-      {
-        type: 'heading',
-        text: 'Use Cases'
+        text: 'Key Characteristics That Matter'
       },
       {
         type: 'text',
-        text: 'Fastify excels in scenarios requiring high throughput and low latency:'
+        text: 'What sets Fastify apart from the dozens of other Node.js frameworks? These characteristics define its identity:'
       },
       {
         type: 'list',
         items: [
-          'RESTful APIs and microservices',
-          'Real-time applications (with WebSocket support)',
-          'API gateways and proxies',
-          'Serverless functions',
-          'Backend for mobile applications',
-          'Any application where performance matters'
+          'Extreme performance — Fastify uses a radix tree (compressed trie) for routing instead of iterating through an array of routes like Express does. This means routing speed stays constant (O(k) where k is URL length) regardless of how many routes you have. Express gets slower (O(n)) as you add routes.',
+          'Plugin-based architecture — Everything in Fastify is a plugin. Routes, middleware, database connections, authentication — all plugins. Each plugin creates an encapsulated scope, meaning code in one plugin cannot accidentally interfere with code in another. This is the secret to building large applications without creating a tangled mess.',
+          'Schema-first validation — Instead of manually checking "is this field a number? is this email valid?", you describe your data shapes using JSON Schema. Fastify validates every incoming request automatically before it reaches your handler. If validation fails, the request is rejected with a detailed error message — your handler never sees bad data.',
+          'First-class TypeScript support — Fastify\'s core is written in TypeScript. Schema definitions automatically infer TypeScript types, so your IDE provides autocompletion for request.body, request.params, etc. No manual type assertions needed.',
+          'Rich official plugin ecosystem — @fastify/cors, @fastify/jwt, @fastify/postgres, @fastify/swagger, and dozens more. These plugins are maintained by the Fastify team itself, so they\'re reliable, well-tested, and follow consistent patterns.',
+          'Pino logger built-in — Logging is not an afterthought. Fastify includes Pino, one of the fastest JSON loggers available, by default. Structured logging means every log line is a JSON object that can be parsed, searched, and analyzed by log aggregation tools.'
+        ]
+      },
+      {
+        type: 'note',
+        label: 'How the radix tree routing works',
+        variant: 'info',
+        text: 'A radix tree (also called a compressed trie or Patricia trie) is a space-optimized tree data structure where each node that is an only child is merged with its parent. When Fastify receives a request, it walks down the tree character by character through the URL path. This means /users/42 and /users/999 both share the /users/ prefix in the tree, making lookup extremely fast regardless of how many routes you\'ve registered. Express, by contrast, iterates through an array testing each route\'s regex pattern one by one.'
+      },
+      {
+        type: 'heading',
+        text: 'Real-World Use Cases'
+      },
+      {
+        type: 'text',
+        text: 'Fastify excels in scenarios where performance and reliability matter:'
+      },
+      {
+        type: 'list',
+        items: [
+          'RESTful APIs and microservices — Fastify is the ideal foundation for API servers. Its schema validation doubles as API documentation (via @fastify/swagger), and its performance means you can serve more traffic with fewer resources.',
+          'Real-time applications — With @fastify/websocket, you can handle thousands of simultaneous WebSocket connections, enabling chat apps, live dashboards, and collaborative tools.',
+          'API gateways — Fastify\'s speed makes it perfect for API gateways that sit in front of multiple backend services, handling routing, authentication, and rate limiting in a single layer.',
+          'Serverless functions — Fastify\'s fast cold start time (under 100ms) makes it suitable for AWS Lambda, Vercel, and other serverless platforms where startup time directly impacts user experience.',
+          'Backend for mobile apps — Mobile apps make many small API calls. Fastify\'s low latency per request means snappier app experiences.',
+          'Any application where performance equals cost savings — Fewer servers handling the same load means lower cloud bills. Fastify\'s efficiency translates directly to money saved.'
         ]
       },
       {
         type: 'code',
         lang: 'javascript',
-        code: `// A minimal Fastify server in just 10 lines
+        code: `// A minimal Fastify server in 10 lines
 import Fastify from 'fastify';
 
 const fastify = Fastify({ logger: true });
@@ -224,6 +300,12 @@ const start = async () => {
 };
 
 start();`
+      },
+      {
+        type: 'note',
+        label: 'What you just saw',
+        variant: 'tip',
+        text: 'Those 10 lines create a fully functional HTTP server with structured request/response logging, automatic JSON content-type headers, and async error handling. In raw Node.js, achieving the same would require ~50 lines of code and you\'d still be missing proper error handling and logging.'
       }
     ],
     quiz: [
@@ -241,6 +323,11 @@ start();`
         question: 'Fastify uses a ____ architecture for extending functionality.',
         options: ['Middleware', 'Plugin', 'Module', 'Component'],
         correct: 1
+      },
+      {
+        question: 'What is the time complexity of route matching in Fastify\'s radix tree?',
+        options: ['O(n) — linear with number of routes', 'O(k) — constant with URL length', 'O(n²) — quadratic', 'O(log n) — logarithmic'],
+        correct: 1
       }
     ]
   },
@@ -253,41 +340,66 @@ start();`
     content: [
       {
         type: 'heading',
-        text: 'Speed and Performance'
+        text: 'Speed and Performance: The Numbers Don\'t Lie'
       },
       {
         type: 'text',
-        text: 'Fastify is one of the fastest Node.js web frameworks available. In benchmarks, it consistently outperforms Express, Koa, and Hapi by significant margins. This is achieved through:'
+        text: 'Fastify is one of the fastest Node.js web frameworks in existence. In the TechEmpower Web Framework Benchmarks (the industry standard for framework performance comparison), Fastify consistently ranks near the top among all frameworks — not just JavaScript frameworks.'
+      },
+      {
+        type: 'text',
+        text: 'The secret to this speed isn\'t one big optimization — it\'s hundreds of small ones, each engineered with performance as a first-class constraint:'
       },
       {
         type: 'list',
         items: [
-          'Efficient routing using a Radix tree (a compressed trie data structure)',
-          'Minimal overhead — Fastify avoids unnecessary abstractions',
-          'Schema-based serialization — JSON serialization is 2-3x faster than JSON.stringify()',
-          'Async-first design — native support for async/await without wrapper libraries'
+          'Radix tree routing — Instead of iterating through an array of routes checking regex patterns (Express\'s approach), Fastify builds a compressed prefix tree. Route matching happens in O(k) time where k is the URL length, regardless of how many routes you have. This means adding 10,000 routes doesn\'t slow down route matching at all.',
+          'Schema-based JSON serialization — When you define a response schema, Fastify generates a specialized serializer function that is 2-3x faster than JSON.stringify(). It knows exactly what fields to include and their types, so it skips the reflection and type-checking that JSON.stringify() does on every call.',
+          'Reused string buffers — Fastify pre-allocates and reuses internal buffers for headers and small responses, avoiding the garbage collection pressure that plagues high-throughput Node.js servers.',
+          'Minimal middleware overhead — Express middleware wraps every handler in layers of function calls. Fastify\'s hook system executes only the hooks you\'ve registered, with minimal indirection.',
+          'Async-first from the ground up — Fastify was designed in the async/await era, not retrofitted to support it. This means cleaner stack traces, simpler error handling, and better performance through native Promise microtasks.'
         ]
       },
       {
         type: 'diagram',
         alt: 'Performance comparison bar chart: Fastify ~65k req/sec, Express ~15k req/sec, Hapi ~12k req/sec',
-        label: 'Requests/sec (higher is better): Fastify ████████████ 65k | Express ███ 15k | Hapi ██ 12k | Koa ████ 20k'
+        label: 'Requests/sec (higher is better):\nFastify ████████████████████████████████ 65,000\nKoa     ██████████ 20,000\nExpress ███████ 15,000\nHapi    ██████ 12,000'
+      },
+      {
+        type: 'note',
+        label: 'Why should you care about 4x performance?',
+        variant: 'info',
+        text: 'A 4x performance difference means you need 4x fewer servers to handle the same traffic. If your cloud bill is $2,000/month running Express, the same application on Fastify could cost $500/month. At scale (thousands of servers), the difference is measured in millions of dollars. Performance is a feature that saves real money.'
       },
       {
         type: 'heading',
-        text: 'Minimal Overhead'
+        text: 'Minimal Overhead: Pay for What You Use'
       },
       {
         type: 'text',
-        text: 'Fastify follows a "pay for what you use" philosophy. The core framework is lightweight, and everything beyond basic routing (authentication, CORS, compression, etc.) is an opt-in plugin. This means your application only includes the code it actually needs.'
+        text: 'Fastify follows a "pay for what you use" philosophy. The core framework is a lean ~15KB — minimal enough that it starts instantly. Everything beyond basic routing (authentication, CORS, compression, file uploads) is an opt-in plugin.'
+      },
+      {
+        type: 'text',
+        text: 'This matters because every kilobyte of unnecessary code is code that could have bugs, needs maintenance, increases your attack surface, and slows down startup. Fastify gives you a tight core and lets you choose exactly what you add on top.'
+      },
+      {
+        type: 'note',
+        label: 'The framework bloat problem',
+        variant: 'warning',
+        text: 'Many frameworks take the opposite approach: bundle everything you might ever need into the core. The result is frameworks that take seconds to start, include features you\'ll never use, and have security vulnerabilities in code paths you didn\'t even know existed. Fastify\'s plugin model means you only install what you actually need, and you know exactly what\'s running in your application.'
       },
       {
         type: 'heading',
-        text: 'Plugin System'
+        text: 'Plugin System: The Secret to Maintainable Code'
       },
       {
         type: 'text',
-        text: 'Fastify\'s plugin system is one of its most powerful features. Plugins are encapsulated, meaning each plugin has its own scope for routes, hooks, and decorators. This prevents conflicts and makes code highly modular. Plugins can be nested, creating a tree of encapsulated contexts.'
+        text: 'Fastify\'s plugin system is arguably its most important architectural feature. It\'s not just a way to add features — it\'s a way to organize your entire application into isolated, testable, reusable pieces.'
+      },
+      {
+        type: 'text',
+        text: 'Unlike Express where middleware is a flat chain (every middleware function can see and modify everything), Fastify plugins create encapsulated scopes. A hook registered inside a plugin only affects routes in that plugin. A decorator created in a plugin doesn\'t leak to the parent. This prevents the "spooky action at a distance" problem that makes large Express applications difficult to maintain.'
       },
       {
         type: 'code',
@@ -309,20 +421,28 @@ export default fp(userRoutes);`
       },
       {
         type: 'heading',
-        text: 'Schema Validation'
+        text: 'Schema Validation: Why It Changes Everything'
       },
       {
         type: 'text',
-        text: 'Fastify uses JSON Schema to validate request inputs and serialize response outputs. This provides:'
+        text: 'In most frameworks, validation is something you add yourself — usually with a library like Joi or Zod, called manually in every route handler. This is repetitive, error-prone, and easy to forget.'
+      },
+      {
+        type: 'text',
+        text: 'Fastify integrates validation directly into its core. You describe your data shapes using JSON Schema in the route options, and Fastify validates every request automatically before your handler runs. If validation fails, the request is rejected with a 400 status code and a detailed error message — your handler never even sees bad data.'
+      },
+      {
+        type: 'text',
+        text: 'This approach provides five critical benefits:'
       },
       {
         type: 'list',
         items: [
-          'Automatic type coercion and validation on every request',
-          'Detailed error messages when validation fails',
-          'Faster JSON serialization using pre-compiled schemas',
-          'Automatic Swagger/OpenAPI documentation generation',
-          'Protection against malformed or malicious input'
+          'Automatic type coercion — string "42" becomes integer 42, ISO date strings become Date objects — all handled before your code runs',
+          'Detailed error messages — failed validation returns exactly which field failed and why, in a structured format the client can understand',
+          'Faster JSON serialization — response schemas generate specialized serializers that are 2-3x faster than JSON.stringify() because they know the exact shape of the data',
+          'Automatic Swagger/OpenAPI documentation — your schemas become your API documentation, always in sync because they\'re the same source of truth',
+          'Protection against injection and malformed input — validation rejects unexpected fields, oversized values, and malicious payloads before they can do harm'
         ]
       },
       {
@@ -331,15 +451,29 @@ export default fp(userRoutes);`
       },
       {
         type: 'text',
-        text: 'Express — the most popular Node.js framework. It\'s simple and has a massive ecosystem, but lacks built-in validation, has slower performance, and uses callback-based middleware. Fastify provides better defaults, validation, and speed.'
+        text: 'Choosing a framework is one of the most consequential decisions in a project. Let\'s compare Fastify honestly against the alternatives:'
       },
       {
         type: 'text',
-        text: 'Hapi — a configuration-driven framework focused on enterprise applications. It offers rich built-in features but has more overhead and a steeper learning curve. Fastify is lighter and faster while still providing robust tooling.'
+        text: 'Express (2010) — The most popular Node.js framework with over 30 million weekly downloads. Express is simple, battle-tested, and has an enormous middleware ecosystem. However, Express was designed in the callback era (pre-2017), so async error handling requires wrapper libraries. It has no built-in validation, slow route matching (linear array scan), and its middleware chain creates deep call stacks. Express is a fine choice when you need maximum ecosystem compatibility, but it shows its age in performance and developer experience.'
       },
       {
         type: 'text',
-        text: 'Koa — a minimal framework by the Express team using async/await. It\'s lightweight but requires many third-party libraries. Fastify offers a more complete out-of-the-box experience with better performance.'
+        text: 'Hapi (2011) — A configuration-driven framework by the Walmart Labs team, designed for large enterprise teams. Hapi has excellent built-in features (validation, caching, authentication) and a strong plugin system. However, Hapi is heavier, slower, and has a steeper learning curve due to its configuration-over-code philosophy. Fastify took inspiration from Hapi\'s plugin system but implemented it with a focus on speed and simplicity.'
+      },
+      {
+        type: 'text',
+        text: 'Koa (2013) — Created by the Express team as a modern reimagining using async/await. Koa is extremely minimal — it\'s essentially just a middleware runner with context objects. This minimalism means you need many third-party libraries for basic features. Fastify offers a more complete out-of-the-box experience with significantly better performance.'
+      },
+      {
+        type: 'text',
+        text: 'NestJS (2017) — A full-featured framework using decorators and dependency injection, heavily inspired by Angular. NestJS is excellent for large enterprise applications but adds significant abstraction overhead. Fastify can actually be used as the underlying HTTP engine in NestJS, giving you both NestJS\'s structure and Fastify\'s performance.'
+      },
+      {
+        type: 'note',
+        label: 'The right tool for the right job',
+        variant: 'tip',
+        text: 'No framework is universally "best." Express has the largest ecosystem and simplest learning curve. NestJS has the most structure for large teams. But when performance, developer experience, and production readiness are your top priorities — which they should be for most new projects — Fastify is the strongest choice in the Node.js ecosystem today.'
       }
     ],
     quiz: [
@@ -367,6 +501,11 @@ export default fp(userRoutes);`
           'Only large companies should use it'
         ],
         correct: 1
+      },
+      {
+        question: 'Which framework can use Fastify as its underlying HTTP engine?',
+        options: ['Express', 'Koa', 'NestJS', 'Hapi'],
+        correct: 2
       }
     ]
   },
@@ -375,149 +514,224 @@ export default fp(userRoutes);`
     id: 'core-concepts',
     section: 'Core Concepts',
     difficulty: 'intermediate',
-    title: 'Core Concepts',
+    title: 'Core Concepts: Routes, Hooks, and the Request Lifecycle',
     content: [
       {
         type: 'heading',
-        text: 'Routes'
+        text: 'Routes: The Foundation of Every API'
       },
       {
         type: 'text',
-        text: 'Routes define the endpoints your server exposes. Each route specifies an HTTP method, a URL path, and a handler function that processes the request and returns a response.'
+        text: 'Routes are the public face of your application. Each route is a promise: "If you send an HTTP request to this URL with this method, I will process it and return a response." Understanding routes deeply is essential because they define the contract between your server and every client that will ever use it.'
+      },
+      {
+        type: 'text',
+        text: 'In Fastify, routes are defined using method-specific functions: fastify.get(), fastify.post(), fastify.put(), fastify.patch(), fastify.delete(), fastify.options(), and fastify.head(). You can also use fastify.route() for more complex configurations or fastify.all() to match any HTTP method.'
       },
       {
         type: 'code',
         lang: 'javascript',
-        code: `// Basic route definition
+        code: `// Basic route — the simplest possible endpoint
 fastify.get('/hello', async (request, reply) => {
   return { message: 'Hello, World!' };
 });
 
-// Route with URL parameters
+// Route with URL parameters — dynamic path segments
 fastify.get('/users/:id', async (request, reply) => {
-  const { id } = request.params;
+  const { id } = request.params;  // Extracted from the URL
   return { userId: id };
 });
 
-// Route with query string
+// Route with query string — optional filtering parameters
 fastify.get('/search', async (request, reply) => {
-  const { q, page } = request.query;
-  return { results: [], query: q, page };
+  const { q, page, limit } = request.query;
+  return { results: [], query: q, page, limit };
 });
 
-// Route with body (POST)
+// Route with JSON body — data sent by the client
 fastify.post('/users', async (request, reply) => {
   const { name, email } = request.body;
+  // request.body is automatically parsed from JSON
   return { created: { name, email } };
 });`
       },
       {
-        type: 'diagram',
-        alt: 'Request lifecycle diagram showing: Request → URL Parsing → Route Matching → Schema Validation → Pre-handler Hooks → Handler → Serialization → Response',
-        label: 'Request Lifecycle:\n1. Request arrives at server\n2. URL parsed, method identified\n3. Radix tree matches route\n4. JSON Schema validates input\n5. Pre-handler hooks execute (auth, etc.)\n6. Route handler runs\n7. Response serialized (JSON Schema)\n8. Response sent to client'
-      },
-      {
-        type: 'heading',
-        text: 'Hooks (Middleware)'
+        type: 'note',
+        label: 'Why method-specific functions exist',
+        variant: 'info',
+        text: 'You might wonder: why fastify.get() instead of fastify.route({ method: "GET" })? The answer is readability and type safety. Each method function restricts the HTTP method at the function level, making your code self-documenting. If you\'re in a fastify.get(), you know without looking that this is a read operation. In TypeScript, the return type can also be inferred differently per method. Plus, it\'s simply faster to type and read.'
       },
       {
         type: 'text',
-        text: 'Hooks allow you to execute code at specific points in the request-response lifecycle. They are Fastify\'s equivalent of middleware, but more structured and predictable.'
+        text: 'Routes are matched in the order they are registered. This means more specific routes should come before less specific ones. For example, /users/search should be registered before /users/:id, because :id would match the literal string "search" as a parameter.'
+      },
+      {
+        type: 'diagram',
+        alt: 'Request lifecycle diagram showing: Request → URL Parsing → Route Matching → Schema Validation → Pre-handler Hooks → Handler → Serialization → Response',
+        label: 'Request Lifecycle:\n1. Raw TCP data arrives at the server\n2. HTTP parser extracts method, URL, headers\n3. Radix tree matches URL to a registered route\n4. Body parser reads and parses the request body\n5. Content-Type parser handles JSON, form data, etc.\n6. JSON Schema validates request against the route schema\n7. onRequest hooks fire\n8. preParsing hooks fire\n9. preValidation hooks fire\n10. preHandler hooks fire (auth typically goes here)\n11. Your route handler executes\n12. preSerialization hooks fire\n13. Response body serialized (using schema if provided)\n14. onSend hooks fire (last chance to modify response)\n15. HTTP response sent to client\n16. onResponse hooks fire (for logging/metrics)\n17. If any error occurred: onError hook fires'
+      },
+      {
+        type: 'heading',
+        text: 'Hooks: The Lifecycle Control Points'
+      },
+      {
+        type: 'text',
+        text: 'Hooks are functions that execute at specific moments in the request lifecycle. They are Fastify\'s equivalent of middleware, but far more structured: each hook has a defined purpose and a guaranteed execution order. You can never accidentally register hooks in the wrong order.'
+      },
+      {
+        type: 'text',
+        text: 'There are 8 hook types, each firing at a precisely defined moment:'
+      },
+      {
+        type: 'list',
+        items: [
+          'onRequest — Fires as soon as a request is received, before any parsing. Ideal for request-level logging, IP-based blocking, or timing the full request lifecycle.',
+          'preParsing — Fires before the body is parsed. Use this to modify the raw request stream or add custom body parsers.',
+          'preValidation — Fires after the body is parsed but before JSON Schema validation. Use this to add custom validation logic or modify the parsed body.',
+          'preHandler — Fires after validation succeeds but before the route handler. This is where authentication and authorization belong — the request is fully parsed and validated, but not yet processed.',
+          'preSerialization — Fires after your handler returns but before the response is serialized to JSON. Use this to transform, filter, or redact fields from your response data.',
+          'onSend — Fires immediately before the response bytes are written to the socket. The last opportunity to set headers or modify the raw payload.',
+          'onResponse — Fires after the full response has been sent. Cannot modify the response — use this for metrics logging and cleanup.',
+          'onError — Fires whenever an error occurs at any point in the lifecycle. Use this for centralized error logging and formatting.'
+        ]
       },
       {
         type: 'code',
         lang: 'javascript',
-        code: `// onRequest — runs when a request is received (before parsing)
+        code: `// Timing every request — a practical example
 fastify.addHook('onRequest', async (request, reply) => {
   request.startTime = Date.now();
 });
 
-// preHandler — runs after validation, before the handler
+// Authentication guard — runs before the handler
 fastify.addHook('preHandler', async (request, reply) => {
   if (!request.headers.authorization) {
     throw fastify.httpErrors.unauthorized();
   }
 });
 
-// onSend — runs before the response is sent
+// Add response time header — runs before sending
 fastify.addHook('onSend', async (request, reply, payload) => {
   reply.header('X-Response-Time', Date.now() - request.startTime);
-  return payload;
+  return payload; // Must return the payload
 });`
       },
       {
+        type: 'note',
+        label: 'Express middleware vs Fastify hooks',
+        variant: 'warning',
+        text: 'In Express, middleware is a linear chain — every middleware function runs for every request unless it calls next() with an error. If you mount middleware in the wrong order, authentication might run after the handler. Fastify\'s named hooks eliminate this entire class of bugs: you can\'t put preHandler logic in an onSend hook because they\'re different APIs. The framework enforces correct ordering.'
+      },
+      {
         type: 'heading',
-        text: 'Request & Reply Objects'
+        text: 'Request & Reply Objects: Everything You Can Access and Control'
       },
       {
         type: 'text',
-        text: 'Fastify provides two core objects in every route handler:'
+        text: 'Fastify provides two objects in every route handler and hook: request and reply. These are enhanced versions of Node.js\'s native IncomingMessage and ServerResponse, with Fastify-specific properties and methods added.'
       },
       {
         type: 'text',
-        text: 'request — contains everything about the incoming HTTP request:'
+        text: 'The request object gives you access to everything the client sent:'
       },
       {
         type: 'list',
         items: [
-          'request.params — URL parameters (e.g., /user/:id)',
-          'request.query — query string parameters (?page=1)',
-          'request.body — parsed request body (requires Content-Type)',
-          'request.headers — HTTP headers',
-          'request.cookies — parsed cookies (with @fastify/cookie)'
+          'request.params — URL parameters extracted from dynamic path segments (/users/:id). These are always strings, even if the segment looks like a number.',
+          'request.query — Query string parameters parsed into key-value pairs (?name=Alice&age=30). Fastify uses a fast custom parser with automatic type coercion.',
+          'request.body — The parsed request body. Fastify automatically handles JSON, URL-encoded form data, and (with @fastify/multipart) file uploads. Content-Type header determines which parser is used.',
+          'request.headers — All HTTP headers sent by the client. Header names are lowercased for consistency. Access authorization as request.headers.authorization, never request.headers.Authorization.',
+          'request.cookies — Parsed cookies (requires @fastify/cookie plugin). Each cookie becomes a property on this object.',
+          'request.ip — The client\'s IP address, respecting X-Forwarded-For headers when behind a proxy.',
+          'request.hostname — The hostname the client used to reach your server.',
+          'request.protocol — "http" or "https", useful for building absolute URLs.',
+          'request.log — A Pino logger instance scoped to this specific request, automatically including the request ID.'
         ]
       },
       {
         type: 'text',
-        text: 'reply — controls the HTTP response sent back:'
+        text: 'The reply object controls exactly what gets sent back to the client:'
       },
       {
         type: 'list',
         items: [
-          'reply.send(data) — send a response manually',
-          'reply.code(statusCode) — set the HTTP status code',
-          'reply.header(key, value) — set response headers',
-          'reply.redirect(url) — redirect the client',
-          'Returning a value from the handler automatically sends it'
+          'reply.send(data) — Send a response explicitly. Useful when you need to send non-JSON data or when the response depends on async operations.',
+          'reply.code(statusCode) — Set the HTTP status code fluently. Example: reply.code(201).send({ id: "new" })',
+          'reply.status(statusCode) — Alias for reply.code() — sets the status and returns reply for chaining.',
+          'reply.header(key, value) — Set a single response header.',
+          'reply.headers(object) — Set multiple response headers at once.',
+          'reply.redirect(url, code) — Send an HTTP redirect (301, 302, 307, 308).',
+          'reply.type(contentType) — Set the Content-Type header (e.g., "text/html").',
+          'Returning a value from the handler — The most common pattern. Fastify automatically serializes the return value to JSON, sets Content-Type to application/json, and sends it. If you return a string, it is sent as text/html.'
         ]
       },
       {
         type: 'heading',
-        text: 'Error Handling'
+        text: 'Error Handling: Why Fastify\'s Approach is Superior'
       },
       {
         type: 'text',
-        text: 'Fastify has a robust error handling system. You can throw errors anywhere in the request lifecycle and Fastify will catch them, format the response, and log the error.'
+        text: 'Error handling is where many web frameworks fail. Express requires you to wrap every async handler in try/catch or use wrapper libraries. If an error occurs in a non-async callback deep in the middleware chain, it might crash your entire server.'
+      },
+      {
+        type: 'text',
+        text: 'Fastify solves this completely: any error thrown anywhere in the request lifecycle — in hooks, handlers, or even in your response serialization — is caught by Fastify\'s error handling system. It logs the error, formats a proper HTTP error response, and continues processing other requests. No crashes, no missed errors.'
       },
       {
         type: 'code',
         lang: 'javascript',
-        code: `// Fastify provides built-in HTTP error classes
-import createError from '@fastify/error';
-
+        code: `// Fastify provides built-in HTTP error classes via fastify.httpErrors
+// No need to install @fastify/sensible — it\'s included by default!
 fastify.get('/protected', async (request, reply) => {
   if (!request.headers.authorization) {
     throw fastify.httpErrors.unauthorized('Missing auth token');
+    // Automatically becomes: { statusCode: 401, error: "Unauthorized", message: "Missing auth token" }
   }
   return { secret: 'data' };
 });
 
-// Custom error handler
+// Custom error handler — format all errors consistently
 fastify.setErrorHandler(async (error, request, reply) => {
-  request.log.error(error);
+  // Log the full error with request context
+  request.log.error({ err: error, url: request.url }, 'Request failed');
+
+  // Always return a consistent error shape
   reply.status(error.statusCode || 500).send({
     error: error.message,
     statusCode: error.statusCode || 500,
+    // In development, include the stack trace for debugging
+    ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
   });
 });`
       },
       {
+        type: 'note',
+        label: 'Why never expose stack traces in production',
+        variant: 'warning',
+        text: 'Stack traces reveal your file structure, library versions, and potentially business logic. An attacker who sees a stack trace learns far more about your system than you want them to. Always check NODE_ENV before including error details in responses.'
+      },
+      {
         type: 'heading',
-        text: 'Validation'
+        text: 'Validation: Why Schema-First Changes Everything'
       },
       {
         type: 'text',
-        text: 'Fastify uses JSON Schema for validation. You define the expected shape of request inputs and response outputs in the route options.'
+        text: 'In most frameworks, validation is something you manually add to each route handler. This leads to duplicated validation code, inconsistent error messages, and routes that forget to validate entirely. Fastify inverts this: you describe what valid data looks like, and the framework enforces it.'
+      },
+      {
+        type: 'text',
+        text: 'JSON Schema is the language you use to describe your data. It\'s an IETF standard (not Fastify-specific), so the same schemas can be used across different tools and languages. When you attach a schema to a route, Fastify automatically:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Validates the request body, query string, URL params, and headers against your schemas',
+          'Rejects invalid requests with a 400 status code and a structured error detailing exactly what was wrong',
+          'Coerces types automatically (string "42" → number 42) when possible',
+          'Strips unexpected fields from the request (preventing mass assignment attacks)',
+          'Pre-compiles response serializers that are 2-3x faster than JSON.stringify()',
+          'Makes your schemas available for Swagger/OpenAPI documentation generation'
+        ]
       },
       {
         type: 'code',
@@ -528,8 +742,9 @@ fastify.post('/users', {
     body: {
       type: 'object',
       required: ['name', 'email'],
+      additionalProperties: false,  // Reject unexpected fields
       properties: {
-        name: { type: 'string', minLength: 2 },
+        name: { type: 'string', minLength: 2, maxLength: 100 },
         email: { type: 'string', format: 'email' },
         age: { type: 'integer', minimum: 0, maximum: 150 }
       }
@@ -547,10 +762,19 @@ fastify.post('/users', {
   }
 }, async (request, reply) => {
   const { name, email, age } = request.body;
-  // Input is already validated — guaranteed to be correct
+  // At this point, validation has already passed
+  // name: guaranteed string, 2-100 chars
+  // email: guaranteed valid email format
+  // age: guaranteed integer, 0-150 (or undefined if not provided)
   reply.code(201);
   return { id: 'abc123', name, email };
 });`
+      },
+      {
+        type: 'note',
+        label: 'The security benefit of additionalProperties: false',
+        variant: 'tip',
+        text: 'Without additionalProperties: false, a client could send { "name": "Alice", "email": "alice@example.com", "isAdmin": true }. Fastify would validate name and email, silently ignore isAdmin, and your handler would run. But what if your code does { ...request.body } and passes it to a database insert? The attacker just set themselves as admin. Setting additionalProperties: false rejects any field not explicitly defined in your schema — a critical security practice.'
       }
     ],
     quiz: [
@@ -757,6 +981,55 @@ start();`
         text: 'In this lesson, we\'ll build a complete REST API for managing a collection of books. This covers all CRUD operations with proper validation, error handling, and structure.'
       },
       {
+        type: 'note',
+        label: 'Why CRUD is the foundation of every API',
+        variant: 'info',
+        text: 'Every web application — whether it\'s a social network, an e-commerce site, or a banking system — revolves around CRUD operations at its core. A tweet is Created, Read by followers, Updated (edit button), and Deleted. An order on Amazon goes through the exact same four operations. Understanding CRUD deeply means understanding the fundamental building block of every API you will ever build. Master this pattern, and you\'ve mastered 80% of backend development.'
+      },
+      {
+        type: 'heading',
+        text: 'Understanding HTTP Semantics in CRUD'
+      },
+      {
+        type: 'text',
+        text: 'Before writing code, it\'s essential to understand the theory behind the HTTP methods. Each method has specific semantics — guarantees about what happens when you call it — and violating these guarantees leads to unreliable APIs.'
+      },
+      {
+        type: 'list',
+        items: [
+          'GET — Safe and Idempotent. "Safe" means it doesn\'t change server state (read-only). "Idempotent" means calling it 1 time or 100 times produces the same result. A GET request should never create, update, or delete anything. Browsers, caches, and proxies rely on this guarantee.',
+          'POST — Neither Safe nor Idempotent. Creates a new resource. Calling POST twice creates two resources (non-idempotent). This is the only HTTP method that is not idempotent — a critical distinction that affects retry logic and error handling.',
+          'PUT — Not Safe but Idempotent. Completely replaces a resource. Calling PUT 5 times with the same data produces the same result as calling it once. PUT requires sending the entire resource — every field, not just the ones you want to change.',
+          'PATCH — Not Safe but may or may not be Idempotent. Partially updates a resource. Unlike PUT, PATCH only requires the fields that changed. However, idempotence depends on the patch format — JSON Merge Patch is idempotent, JSON Patch (with operations like "increment") is not.',
+          'DELETE — Not Safe but Idempotent. Removes a resource. Deleting something that\'s already deleted should return 404 the first time and 404 every subsequent time — the end state is the same, so it\'s idempotent.'
+        ]
+      },
+      {
+        type: 'note',
+        label: 'Why idempotency matters in production',
+        variant: 'warning',
+        text: 'Network failures happen. A client sends a POST request, the server processes it successfully, but the response gets lost in transit. The client retries, and suddenly you have two charges on a credit card, two orders created, or two users registered with the same email. Idempotency keys are a solution: the client generates a unique key per operation, sends it in a header, and the server deduplicates requests with the same key. This is why Stripe, PayPal, and every payment processor require idempotency keys on POST requests. For PUT and DELETE, idempotency is built into the HTTP semantics — retry safely.'
+      },
+      {
+        type: 'heading',
+        text: 'API Design: Resource Naming Conventions'
+      },
+      {
+        type: 'text',
+        text: 'The way you name your endpoints is a form of documentation. Consistent naming conventions make your API intuitive and predictable:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Use plural nouns for collections: /books, not /book or /getBooks',
+          'Use hierarchical paths for relationships: /authors/:authorId/books for an author\'s books',
+          'Use query parameters for filtering, sorting, and pagination: /books?genre=fiction&sort=year&page=2',
+          'Use HTTP methods as verbs (GET, POST, PUT, DELETE) — never put verbs in the URL',
+          'Keep URLs lowercase with hyphens as word separators: /book-reviews, not /bookReviews or /BookReviews',
+          'Version your API from day one: /v1/books. It\'s far easier to start with versioning than to add it later when you need to make breaking changes.'
+        ]
+      },
+      {
         type: 'heading',
         text: 'Define the Schema'
       },
@@ -918,7 +1191,52 @@ const books = [
       },
       {
         type: 'heading',
-        text: 'Complete Application'
+        text: 'Understanding HTTP Status Codes in CRUD Operations'
+      },
+      {
+        type: 'text',
+        text: 'The status codes in this API aren\'t arbitrary — each one carries specific meaning that clients rely on:'
+      },
+      {
+        type: 'list',
+        items: [
+          '200 OK — Used for GET (single and list) and PUT. The response body contains the requested or updated resource. This is the most common success code.',
+          '201 Created — Used specifically for POST. Tells the client "a new resource was created." Best practice is to include a Location header with the URL of the newly created resource, and the created resource in the response body.',
+          '204 No Content — Used for DELETE. Indicates the operation succeeded but there\'s nothing to return. The client should not expect a response body. Some APIs return 200 with a confirmation message instead — both are valid, but 204 is more semantically correct for deletions.',
+          '400 Bad Request — Automatically returned by Fastify when schema validation fails. The client sent data that doesn\'t match the expected shape.',
+          '404 Not Found — Returned when a specific resource ID doesn\'t exist. Critical distinction: 404 means "the endpoint is valid but this specific item doesn\'t exist" — different from a generic "this route doesn\'t exist" 404.',
+          '500 Internal Server Error — Returned when something unexpected goes wrong. A 500 should never happen in normal operation — every 500 is a bug that needs investigation.'
+        ]
+      },
+      {
+        type: 'note',
+        label: 'Why status codes are a contract, not decoration',
+        variant: 'info',
+        text: 'HTTP clients — browsers, mobile apps, API consumers — make decisions based on status codes. A 401 tells the client to redirect to login. A 429 tells the client to back off and retry later (rate limiting). A 301 tells the client to permanently update its bookmarked URL. If you return 200 for errors with {"error": "not found"} in the body, HTTP caches will cache your error responses, automated retry logic won\'t work, and API consumers will hate you. Use correct status codes. Your future self (and everyone who uses your API) will thank you.'
+      },
+      {
+        type: 'heading',
+        text: 'Error Handling Patterns: Defensive Programming for APIs'
+      },
+      {
+        type: 'text',
+        text: 'Every route in this API checks if the resource exists before operating on it. This pattern — "check existence, return 404, otherwise proceed" — is perhaps the most important pattern in API development. Without it:'
+      },
+      {
+        type: 'list',
+        items: [
+          'findIndex returns -1, and books[-1] is undefined — spreading undefined creates an empty object, silently corrupting your data',
+          'Deleting a non-existent resource succeeds silently, giving the client false confidence that their data was removed',
+          'Updating a non-existent resource with a database (not in-memory like here) could create phantom records or trigger cascading errors'
+        ]
+      },
+      {
+        type: 'text',
+        text: 'Fastify\'s httpErrors factory makes this pattern clean: one line to throw, and Fastify catches it, formats it, and logs it. But the pattern — check before acting — must be in your code. No framework can check business logic for you.'
+      },
+      {
+        type: 'heading',
+        text: 'The Complete Application',
       },
       {
         type: 'text',
@@ -1010,6 +1328,102 @@ fastify.delete('/books/:id', { schema: { params: bookParams } },
 
 // Start server
 await fastify.listen({ port: 3000 });`
+      },
+      {
+        type: 'heading',
+        text: 'The Decorator Pattern: Extending Fastify Safely'
+      },
+      {
+        type: 'text',
+        text: 'fastify.decorate() is one of Fastify\'s most important but least understood features. It lets you add custom properties and methods to the Fastify instance, request, and reply objects — and critically, it prevents accidental overwrites.'
+      },
+      {
+        type: 'text',
+        text: 'Consider what happens without decorators. If you write fastify.authenticate = myFunction, there\'s nothing stopping another plugin from writing fastify.authenticate = otherFunction, silently breaking your auth system. fastify.decorate() throws an error if you try to overwrite an existing decorator. This is crash-early behavior: better to fail at startup with a clear error message than to have mysterious auth failures at runtime.'
+      },
+      {
+        type: 'note',
+        label: 'Why the decorator pattern beats monkey-patching',
+        variant: 'info',
+        text: 'In Express, the common pattern is to attach stuff to the request object directly: req.user = userData. This works until two middleware functions try to use the same property name, or until you\'re debugging and can\'t figure out where req.user came from. Fastify\'s decorators are named, typed (in TypeScript), and panic on conflicts. They make the implicit explicit, turning "where did this property come from?" into "ah, it\'s a decorator registered by the auth plugin." For large codebases, this discoverability is invaluable.'
+      },
+      {
+        type: 'heading',
+        text: 'Hook Patterns: Composing Behaviors Like Building Blocks'
+      },
+      {
+        type: 'text',
+        text: 'The real power of hooks emerges when you compose multiple hooks to create sophisticated behaviors. Each hook is a single responsibility, and combined they form a processing pipeline.'
+      },
+      {
+        type: 'text',
+        text: 'Consider a production-ready request pipeline:'
+      },
+      {
+        type: 'list',
+        items: [
+          'onRequest: Rate limiting (reject if too many requests from this IP), request ID generation (attach a unique ID for tracing)',
+          'preParsing: Body size limit check (reject if payload exceeds max size before parsing it)',
+          'preValidation: Request sanitization (trim strings, normalize emails), custom business rule validation that JSON Schema can\'t express',
+          'preHandler: Authentication (verify JWT), Authorization (check roles/permissions), Audit logging (record who did what)',
+          'preSerialization: Response filtering (remove internal fields before sending), Data transformation',
+          'onSend: Add security headers (CSP, HSTS, X-Content-Type-Options), Compression (gzip/brotli)',
+          'onResponse: Metrics (record response time, status code for dashboards), Cleanup (release resources)',
+          'onError: Error normalization (consistent error shape), Alerting (notify on-call for 5xx errors), Sanitization (never leak stack traces to clients)'
+        ]
+      },
+      {
+        type: 'text',
+        text: 'Each of these is a separate, testable function. None of them know about the others. The order is enforced by the hook type, not by manual sequencing. This is the opposite of Express middleware, where app.use(auth) must come before app.use(routes) and if you get the order wrong, nothing warns you.'
+      },
+      {
+        type: 'heading',
+        text: 'Context Propagation: Passing Data Through the Lifecycle'
+      },
+      {
+        type: 'text',
+        text: 'A common pattern in web applications is passing data from one hook to another. For example, an auth hook extracts the user and stores it on the request, then the route handler uses it. But how do you do this safely and with type support?'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// Pattern 1: request-scoped decorators (the recommended approach for per-request data)
+// In your auth plugin:
+fastify.decorateRequest('user', null);
+
+fastify.addHook('preHandler', async (request, reply) => {
+  const token = request.headers.authorization;
+  // Verify and decode...
+  request.user = { id: 'user-1', role: 'admin', name: 'Alice' };
+  // Now every subsequent hook and handler can access request.user
+});
+
+// In any route handler:
+fastify.get('/profile', async (request) => {
+  return { user: request.user }; // request.user is available and typed
+});
+
+// Pattern 2: Shared context via AsyncLocalStorage (for cross-plugin data sharing)
+import { AsyncLocalStorage } from 'node:async_hooks';
+
+const requestContext = new AsyncLocalStorage();
+
+fastify.addHook('onRequest', (request, reply, done) => {
+  const context = { requestId: crypto.randomUUID(), startTime: Date.now() };
+  requestContext.run(context, () => done());
+});
+
+// Later, in any function (even deeply nested without request/reply access):
+fastify.get('/deeply-nested', async () => {
+  const ctx = requestContext.getStore();
+  console.log(ctx.requestId); // Same request ID, even without access to request object
+});`
+      },
+      {
+        'type': 'note',
+        label: 'Why AsyncLocalStorage matters for observability',
+        variant: 'tip',
+        text: 'AsyncLocalStorage is Node.js\'s built-in solution to the "context propagation problem." In a multi-threaded language like Java, you\'d use thread-local storage (each thread has its own context). Node.js is single-threaded but asynchronous — thousands of "virtual threads" (async operations) interleave. AsyncLocalStorage gives each async operation its own context that flows through callbacks, promises, and async/await automatically. This is how tools like Datadog and OpenTelemetry attach trace IDs to every log line and span without requiring you to pass a context object through every function parameter. It\'s one of Node.js\'s most powerful and underused features.'
       }
     ],
     quiz: [
@@ -1280,6 +1694,12 @@ fastify.register(async (adminScope) => {
         text: 'The event loop has six phases, and each phase has a FIFO queue of callbacks. Fastify uses async/await, which runs on the microtask queue — processed after each phase of the event loop.'
       },
       {
+        type: 'note',
+        label: 'Why single-threaded was a deliberate choice',
+        variant: 'info',
+        text: 'When Ryan Dahl created Node.js in 2009, he made a counterintuitive decision: use a single thread instead of the multi-threaded model that Java and Python servers used. The insight was that most web server work is I/O-bound (waiting for databases, files, and network), not CPU-bound. A single event loop can handle thousands of concurrent connections because it never blocks waiting for I/O — it registers a callback and moves on. Multi-threaded servers waste most of their time with threads sleeping. Node.js wastes nothing.'
+      },
+      {
         type: 'heading',
         text: 'Blocking vs Non-Blocking Operations'
       },
@@ -1421,6 +1841,12 @@ if (cluster.isPrimary) {
       {
         type: 'text',
         text: 'Fastify\'s plugin system is its most powerful architectural feature. Everything — from routes to middleware to database connections — is a plugin. This creates a consistent, composable, and testable codebase.'
+      },
+      {
+        type: 'note',
+        label: 'Why plugins matter at scale',
+        variant: 'info',
+        text: 'In small applications (under 5 routes), any architecture works. The problems start when your application grows to 50 routes, 10 middleware functions, 3 databases, and a team of 5 developers. Express\'s flat middleware chain becomes a nightmare: middleware registered in one file affects routes in another file, ordering bugs are subtle and hard to debug, and "just add another app.use()" leads to a tangled dependency graph. Fastify\'s encapsulated plugins solve this by giving each feature its own namespace. User-related code lives in a user plugin, auth code in an auth plugin, and they cannot accidentally interfere with each other. This is the same principle that makes React components and npm packages work — isolation and explicit interfaces.'
       },
       {
         type: 'heading',
@@ -1617,6 +2043,12 @@ await fastify.register(userRoutes); // Safe — db decorator exists`
       {
         type: 'text',
         text: 'TypeScript adds static type checking to JavaScript, catching entire categories of bugs at compile time. Fastify is built with TypeScript and provides excellent type inference, making your backend code more reliable and self-documenting.'
+      },
+      {
+        type: 'note',
+        label: 'Why TypeScript for backend development',
+        variant: 'info',
+        text: 'JavaScript\'s dynamic typing is convenient for quick scripts but dangerous for backend code that handles money, user data, and security. A typo in a property name (request.bdoy instead of request.body) silently produces undefined — no error, just corrupted data. TypeScript catches these at compile time, before a single line of your server runs. The investment in types pays back exponentially as your codebase grows: types serve as living documentation, enable safe refactoring (rename a field and TypeScript tells you every place that needs updating), and make onboarding new team members dramatically faster. Fastify\'s type inference from JSON Schemas means you get these benefits with surprisingly little additional code.'
       },
       {
         type: 'heading',
@@ -1835,6 +2267,12 @@ fastify.get('/profile', {
       {
         type: 'text',
         text: 'Fastify\'s schema validation goes far beyond simple type checking. You can define complex constraints, custom keywords, conditional validation, and even transform data during validation.'
+      },
+      {
+        type: 'note',
+        label: 'Why validation depth matters in production',
+        variant: 'info',
+        text: 'Basic validation (is this a string?) prevents crashes. Advanced validation (if the order type is "physical", a shipping address must exist, and the zip code must match the country format) prevents business logic errors that corrupt your database. Every constraint you can express in JSON Schema is a constraint you don\'t have to check manually in your handler. This makes your handlers simpler, more focused on business logic, and less likely to contain validation bugs. It also means your API documentation (generated from schemas) accurately reflects every constraint — clients know exactly what\'s required without reading your source code.'
       },
       {
         type: 'heading',
@@ -2120,6 +2558,18 @@ fastify.post('/products', { schema: productSchema }, async (request, reply) => {
         text: 'Real applications need persistent storage. Fastify has official plugins for PostgreSQL and Redis, plus community plugins for MongoDB, MySQL, SQLite, and more. The pattern is always the same: create a plugin, decorate the Fastify instance, and use it in routes.'
       },
       {
+        type: 'note',
+        label: 'Why connection pooling matters',
+        variant: 'info',
+        text: 'Opening a database connection is expensive — it involves a TCP handshake, TLS negotiation, and authentication. Doing this for every request would add 50-100ms of latency per request and overwhelm your database with connection overhead. A connection pool maintains a set of persistent connections that are reused across requests. When a request needs the database, it borrows a connection from the pool, executes its queries, and returns the connection. This turns a 100ms connection cost into a sub-millisecond checkout. The pool size should match your database\'s connection limit — typically 20 for PostgreSQL. Too few connections and requests queue up. Too many and you exhaust database resources.'
+      },
+      {
+        type: 'note',
+        label: 'Why parameterized queries ($1, $2) are mandatory',
+        variant: 'warning',
+        text: 'SQL injection is the #3 most critical web application security risk according to OWASP. It happens when you concatenate user input directly into SQL strings: \x60SELECT * FROM users WHERE email = \'${email}\'\x60. A malicious user can input \x60\' OR 1=1 --\x60 and suddenly the query returns every user in the database. Parameterized queries (\x60$1, $2\x60) separate the SQL structure from the data values. The database knows exactly what is code and what is data, making injection impossible. This is not optional — every single database query in your application must use parameterized queries. Fastify doesn\'t enforce this (it can\'t — SQL is just a string to JavaScript), so it\'s your responsibility.'
+      },
+      {
         type: 'heading',
         text: 'PostgreSQL with @fastify/postgres'
       },
@@ -2367,12 +2817,24 @@ fastify.get('/posts/:id', async (request, reply) => {
         text: 'Security is not optional — it must be built into every layer of your application. Fastify provides official plugins for authentication, CORS, rate limiting, and more.'
       },
       {
+        type: 'note',
+        label: 'Why security is never "someone else\'s problem"',
+        variant: 'warning',
+        text: 'Every backend developer is a security engineer whether they like it or not. In 2024 alone, data breaches exposed over 5 billion records. The root cause is almost always the same: developers who assumed security was handled elsewhere. The OWASP Top 10 (the definitive list of web application security risks) hasn\'t changed materially in a decade — the same vulnerabilities keep appearing because the same mistakes keep being made. Broken authentication, SQL injection, and overly permissive CORS configurations are among the most common and most preventable vulnerabilities. Fastify\'s schema validation and plugin ecosystem make it harder to make these mistakes — but you still need to understand them.'
+      },
+      {
         type: 'heading',
         text: 'JWT Authentication'
       },
       {
         type: 'text',
         text: 'JSON Web Tokens (JWT) are the most common authentication mechanism for APIs. The @fastify/jwt plugin makes JWT handling straightforward.'
+      },
+      {
+        type: 'note',
+        label: 'Why JWT instead of sessions',
+        variant: 'info',
+        text: 'Traditional session-based auth stores a session ID in a cookie and looks up the user on every request from a database. This works fine but requires a database read for every authenticated request. JWTs are stateless: all the user information (who they are, what permissions they have, when the token expires) is encoded in the token itself and cryptographically signed. The server just verifies the signature — no database lookup needed. This makes JWTs ideal for microservices (any service can verify the token independently) and high-throughput APIs. The tradeoff: JWTs can\'t be invalidated individually (unless you maintain a blocklist), so keep expiry times short (15-60 minutes) and use refresh tokens for longer sessions.'
       },
       {
         type: 'code',
@@ -2623,6 +3085,12 @@ fastify.post('/auth/refresh', async (request) => {
         text: 'Testing ensures your API behaves correctly, catches regressions, and documents expected behavior. Fastify makes testing easy with its inject() method, which simulates HTTP requests without starting a real server.'
       },
       {
+        type: 'note',
+        label: 'Why testing is non-negotiable in backend development',
+        variant: 'warning',
+        text: 'Frontend bugs are visible — a button doesn\'t work, a page looks wrong. Backend bugs are invisible and catastrophic — silently corrupting data, double-charging customers, leaking private information. The only way to catch backend bugs before they reach production is testing. Fastify\'s inject() method makes testing so fast (sub-millisecond per test) that there\'s no excuse not to write tests. A test suite that runs in under a second can be run on every file save, catching bugs within seconds of writing them. The alternative — manually testing every endpoint with curl or Postman — scales linearly with the number of endpoints. Tests scale logarithmically.'
+      },
+      {
         type: 'heading',
         text: 'The inject() Method'
       },
@@ -2802,6 +3270,168 @@ await app.close();`
       {
         type: 'text',
         text: 'Node.js 18+ has a built-in test runner. No Jest, no Mocha — just node --test. It supports subtests, describe/it syntax, mocking, and coverage.'
+      },
+      {
+        type: 'heading',
+        text: 'Testing Strategy: What to Test and What to Skip'
+      },
+      {
+        type: 'text',
+        text: 'Not all tests are equal. A comprehensive testing strategy combines multiple levels of testing, each with a specific purpose:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Unit tests — Test individual functions in isolation. Fastify\'s plugin structure makes unit testing easy: extract business logic into pure functions, test them directly. Example: a function that calculates order totals should be tested without Fastify at all.',
+          'Integration tests (inject tests) — Test the full request-response cycle including hooks, validation, and serialization. These are the sweet spot for Fastify: they\'re nearly as fast as unit tests but test the real system. Every route should have at least one happy-path integration test and one error-path test.',
+          'Contract tests — Verify that your API responses match your schemas. Fastify does this automatically if you define response schemas — the serializer actually validates the shape. But you should also test that your OpenAPI docs match reality (@fastify/swagger).',
+          'End-to-end tests — Test the entire system including external dependencies (real database, real Redis). These are slower and more brittle but catch integration issues that mock-based tests miss. Run these in CI, not on every save.',
+          'Load tests — Verify your API can handle expected traffic. Tools like autocannon (built by the Fastify team!) can generate thousands of requests per second. Set performance budgets: "GET /users must respond in under 50ms at 1000 concurrent requests."'
+        ]
+      },
+      {
+        type: 'heading',
+        text: 'Testing Async Operations and Error Scenarios'
+      },
+      {
+        type: 'text',
+        text: 'The most common and most important tests in backend development are error tests: "what happens when a user sends bad data, requests a non-existent resource, or has an expired token?" These are the scenarios that actually break in production.'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+test('comprehensive error handling tests', async (t) => {
+  const app = buildApp();
+
+  await t.test('POST /users with missing required fields returns 400', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/users',
+      payload: { name: 'Alice' }, // Missing required 'email'
+    });
+    assert.strictEqual(res.statusCode, 400);
+    const body = JSON.parse(res.body);
+    assert.ok(body.error);
+    assert.ok(body.message.includes('body'));
+  });
+
+  await t.test('POST /users with invalid email format returns 400', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/users',
+      payload: { name: 'Alice', email: 'not-an-email' },
+    });
+    assert.strictEqual(res.statusCode, 400);
+  });
+
+  await t.test('GET /users/:id with non-existent ID returns 404', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/users/non-existent-id-12345',
+      headers: { authorization: 'Bearer valid-token' },
+    });
+    assert.strictEqual(res.statusCode, 404);
+  });
+
+  await t.test('GET /users without auth token returns 401', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/users',
+      // No authorization header
+    });
+    assert.strictEqual(res.statusCode, 401);
+  });
+
+  await t.test('POST /users with unexpected fields returns 400', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/users',
+      payload: { name: 'Alice', email: 'a@b.com', isAdmin: true },
+    });
+    // If additionalProperties: false is set, this should be 400
+    assert.strictEqual(res.statusCode, 400);
+  });
+
+  await app.close();
+});`,
+        lang: 'javascript'
+      },
+      {
+        type: 'heading',
+        text: 'Test Fixtures and Database Setup'
+      },
+      {
+        type: 'text',
+        text: 'Tests need predictable data. Hard-coding test data inline (like the examples above) works for simple cases but becomes unmanageable as your schema grows. A better approach:'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// test/fixtures.js
+export const fixtures = {
+  users: {
+    alice: { name: 'Alice Johnson', email: 'alice@example.com', password: 'securePass123!' },
+    bob: { name: 'Bob Smith', email: 'bob@example.com', password: 'anotherPass456!' },
+  },
+  // Generated on test run so IDs are predictable
+  createTestUser: async (app, userData) => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/users',
+      payload: userData,
+    });
+    return JSON.parse(res.body);
+  },
+};
+
+// test/users.test.js
+import { fixtures } from './fixtures.js';
+import { buildApp, buildTestDb } from '../src/app.js';
+
+test('user CRUD flow', async (t) => {
+  await buildTestDb(); // Run migrations on test database
+  const app = buildApp();
+
+  // Setup: create a user to work with
+  const user = await fixtures.createTestUser(app, fixtures.users.alice);
+  assert.ok(user.id);
+
+  // Test: retrieve the created user
+  const getRes = await app.inject({
+    method: 'GET',
+    url: \`/users/\${user.id}\`,
+  });
+  assert.strictEqual(getRes.statusCode, 200);
+  assert.strictEqual(JSON.parse(getRes.body).email, fixtures.users.alice.email);
+
+  await app.close();
+});`
+      },
+      {
+        type: 'note',
+        label: 'Why test fixtures and factories beat hard-coded data',
+        variant: 'tip',
+        text: 'Hard-coded test data decays over time. Your schema changes (add a required field) and suddenly every test breaks because the hard-coded data is missing the new field. Fixture factories — functions that create test data with sensible defaults — localize schema changes. When you add a new required field, you update the factory once, and all tests automatically get valid data. This is the single biggest productivity improvement in backend testing, and it costs almost nothing to implement from the start.'
+      },
+      {
+        type: 'heading',
+        text: 'The Test Pyramid Applied to Fastify'
+      },
+      {
+        type: 'text',
+        text: 'The test pyramid is a classic software engineering concept: lots of fast unit tests at the bottom, fewer integration tests in the middle, and a small number of slow end-to-end tests at the top. Fastify\'s inject() method collapses the pyramid: integration tests are nearly as fast as unit tests (sub-millisecond), so you can afford to write many more of them. A Fastify test suite should be:'
+      },
+      {
+        type: 'list',
+        items: [
+          '10% pure unit tests — for complex business logic functions extracted from route handlers',
+          '80% inject() integration tests — for every route, covering happy path, validation errors, auth errors, and edge cases',
+          '5% database integration tests — using a real test database, run in CI but not on every save',
+          '5% contract and load tests — verifying schemas match OpenAPI docs and performance budgets are met'
+        ]
       }
     ],
     quiz: [
@@ -2846,6 +3476,12 @@ await app.close();`
       {
         type: 'text',
         text: 'Moving a Fastify application from your laptop to production involves configuration, process management, containerization, monitoring, and CI/CD. This lesson covers the essential steps.'
+      },
+      {
+        type: 'note',
+        label: 'Why the "it works on my machine" problem exists',
+        variant: 'info',
+        text: 'The gap between development and production is where most failures happen. In development, you have your exact Node.js version, your local PostgreSQL with test data, your .env file with secrets, and no traffic. In production, you have a different environment, different database (with real data and 100x more of it), secrets managed differently, and thousands of concurrent users. Docker solves the "works on my machine" problem by packaging everything — Node.js, your code, dependencies, even the operating system — into a single immutable container. Environment validation with @fastify/env catches missing configuration at startup (not 3 AM when a user hits the broken endpoint). Health checks tell your load balancer which instances are alive. Graceful shutdown prevents dropped requests during deploys. These aren\'t nice-to-haves — they\'re the difference between a hobby project and production software.'
       },
       {
         type: 'heading',
@@ -3066,6 +3702,127 @@ jobs:
           docker build -t myapp .
           docker tag myapp registry.example.com/myapp:latest
           docker push registry.example.com/myapp:latest`
+      },
+      {
+        type: 'heading',
+        text: 'Monitoring and Observability: Knowing What Your Server is Doing'
+      },
+      {
+        type: 'text',
+        text: 'In development, when something goes wrong, you look at the console. In production, you have 20 instances running across 5 machines, each handling hundreds of requests per second. You cannot SSH into each one. You need centralized monitoring.'
+      },
+      {
+        type: 'text',
+        text: 'Observability has three pillars, and Fastify supports all three natively:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Logs — Structured JSON logs via Pino. Every request, error, and significant event generates a log line with a request ID, timestamp, and context. Ship these to a log aggregator (ELK, Datadog, Grafana Loki) to search and correlate across instances.',
+          'Metrics — Quantitative measurements over time: request rate, error rate, response time percentiles (p50, p95, p99), database query time, memory usage. Fastify metrics can be exposed via @fastify/metrics (Prometheus-compatible) and visualized in Grafana dashboards.',
+          'Traces — A trace follows a single request as it travels through multiple services (API gateway → auth service → user service → database). @fastify/opentelemetry adds OpenTelemetry support, generating traces that show exactly where time is spent and where failures occur.'
+        ]
+      },
+      {
+        type: 'note',
+        label: 'Why the three pillars together',
+        variant: 'info',
+        text: 'Logs tell you WHAT happened ("user 42 failed login"). Metrics tell you HOW MUCH ("login failures spiked to 500/minute at 3:14 AM"). Traces tell you WHERE ("the login failure happened because the auth service timed out after 5 seconds waiting for the database"). Each pillar answers a different question about the same event. Without all three, you\'re debugging production issues with one hand tied behind your back.'
+      },
+      {
+        type: 'heading',
+        text: 'Scaling Strategies: From 10 to 10 Million Users'
+      },
+      {
+        type: 'text',
+        text: 'Fastify\'s performance means you can go surprisingly far on a single server. But eventually, you need to scale horizontally (add more servers). Understanding the strategies is essential:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Vertical scaling (scale up) — Buy a bigger server. More RAM, more CPU cores, faster SSDs. Fastify\'s single-threaded event loop means it only uses one core per process, so vertical scaling without horizontal scaling wastes CPU. Up to a point: bigger servers cost exponentially more.',
+          'Horizontal scaling with PM2 cluster — Run multiple Fastify instances on one machine (one per CPU core). PM2 load-balances between them. Zero code changes needed. This is the first step when you outgrow a single process.',
+          'Horizontal scaling with containers — Run multiple identical Docker containers across multiple machines. A load balancer (nginx, HAProxy, or a cloud load balancer) distributes traffic. Each container is stateless — any instance can serve any request.',
+          'Database scaling — This is typically where you hit limits before Fastify does. Start with read replicas (write to primary, read from replicas), then consider sharding (split data across multiple databases by a partition key like user ID). Connection pooling becomes critical at this scale.',
+          'Caching at every layer — Browser caching (Cache-Control headers), CDN caching (Cloudflare, Fastly), application caching (Redis), database query caching. Every millisecond you save at a lower layer is a millisecond Fastify doesn\'t have to spend.'
+        ]
+      },
+      {
+        type: 'heading',
+        text: 'Zero-Downtime Deployments'
+      },
+      {
+        type: 'text',
+        text: 'Deploying a new version of your application while users are actively using it without them noticing any interruption is one of the hardest problems in operations. Fastify\'s graceful shutdown makes it achievable:'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// Zero-downtime deployment with PM2 reload
+// pm2 reload ecosystem.config.cjs --update-env
+
+// What happens during reload:
+// 1. PM2 spawns new worker processes with the updated code
+// 2. New workers start and begin accepting connections
+// 3. Old workers receive SIGINT but DON'T exit immediately
+// 4. Old workers close their HTTP servers (stop accepting new connections)
+// 5. Old workers finish processing in-flight requests
+// 6. Old workers close database connections and exit
+// 7. All traffic is now served by new workers
+
+// In your Fastify app, the graceful shutdown hook:
+const signals = ['SIGINT', 'SIGTERM'];
+signals.forEach(signal => {
+  process.on(signal, async () => {
+    fastify.log.info('Starting graceful shutdown...');
+
+    // 1. Stop accepting new connections
+    await fastify.close();
+
+    // 2. Close database connection pool
+    if (fastify.pg) {
+      await fastify.pg.end();
+    }
+
+    // 3. Close Redis connection
+    if (fastify.redis) {
+      await fastify.redis.quit();
+    }
+
+    fastify.log.info('Shutdown complete');
+    process.exit(0);
+  });
+});`
+      },
+      {
+        type: 'heading',
+        text: 'Deployment Checklist'
+      },
+      {
+        type: 'text',
+        text: 'Before deploying to production, verify every item on this list. Most production incidents are caused by missing one of these:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Environment variables validated at startup (not runtime) via @fastify/env',
+          'All secrets in environment variables or a secrets manager (never in code or Dockerfile)',
+          'HTTPS/TLS enabled with valid certificates (Let\'s Encrypt via Certbot, or cloud-managed)',
+          'Health check endpoint returning 200 when all dependencies (DB, Redis) are reachable',
+          'Readiness check endpoint — separate from health, signals when the instance is ready for traffic (all plugins loaded, DB connected)',
+          'Graceful shutdown handling SIGTERM with connection draining',
+          'Rate limiting on all public endpoints',
+          'CORS set to specific origins (never wildcard in production)',
+          'Helmet security headers configured',
+          'Request size limits (body limit, query string limit) to prevent DoS',
+          'Structured logging in JSON format with request IDs',
+          'Centralized log aggregation configured and tested',
+          'Monitoring dashboards for key metrics: request rate, error rate, p95 latency, memory/CPU',
+          'Alerts configured: >1% error rate, >200ms p95 latency, >80% memory usage',
+          'Database backups configured and tested (you test restores, not just backups)',
+          'CI/CD pipeline with automated tests blocking deployment on failure',
+          'Rollback plan documented and tested: know exactly what command reverts to the previous version'
+        ]
       }
     ],
     quiz: [
@@ -3114,7 +3871,13 @@ jobs:
       },
       {
         type: 'text',
-        text: 'In this capstone project, we\'ll build a complete Task Management API from scratch — applying everything learned: routes, plugins, validation, authentication, database integration, testing, and deployment.'
+        text: 'In this capstone project, we\'ll build a complete Task Management API from scratch — applying everything learned: routes, plugins, validation, authentication, database integration, testing, and deployment. This is not a simplified tutorial project. It\'s designed to mirror the architecture and patterns used in production Fastify applications.'
+      },
+      {
+        type: 'note',
+        label: 'Why building a full project matters',
+        variant: 'tip',
+        text: 'Tutorials teach individual concepts in isolation. But real applications are not collections of isolated features — they\'re interconnected systems where every decision affects every other part. Building a complete project from scratch forces you to confront the integration challenges that tutorials skip: how does authentication flow through every route? How do you organize 20+ files without creating spaghetti? How do you handle errors consistently across authentication, validation, and database operations? This capstone answers all of these questions by walking through a complete, production-pattern application. After completing it, you\'ll have a template you can use as the starting point for any Fastify project.'
       },
       {
         type: 'heading',
@@ -3389,8 +4152,288 @@ export function buildApp(opts = {}) {
         text: 'This task management API demonstrates: user authentication with JWT, full CRUD with proper ownership checks, input validation with JSON Schema, PostgreSQL integration with parameterized queries, filtering and search, error handling, rate limiting, CORS, Swagger documentation, and a clean testable architecture. These are the patterns used in production Fastify applications at companies worldwide.'
       },
       {
+        type: 'heading',
+        text: 'Architectural Decisions: Why We Built It This Way'
+      },
+      {
         type: 'text',
-        text: 'From here, you can extend this with: file uploads for task attachments, email notifications, WebSocket real-time updates, pagination, audit logging, and more. You now have the foundation to build production-ready backend applications with Fastify.'
+        text: 'This capstone makes deliberate architectural choices. Understanding why we chose each pattern is just as important as understanding the code itself:'
+      },
+      {
+        type: 'list',
+        items: [
+          'Why app factory (buildApp) instead of a singleton? — A single global Fastify instance cannot be tested: you can\'t create a fresh instance for each test without restarting the process. The factory pattern returns a new instance on every call, enabling parallel test execution and allowing tests to configure different plugins/mocks.',
+          'Why service-based architecture instead of inline logic? — Placing business logic directly in route handlers works for 5 routes but becomes a maintenance nightmare at 50. Services are pure functions that can be unit-tested without Fastify at all. Routes become thin controllers that parse input, call services, and format output.',
+          'Why UUIDs instead of auto-incrementing IDs? — Auto-incrementing IDs leak information (a competitor can estimate your user count by signing up twice and seeing the ID gap). They\'re predictable (an attacker can guess IDs by incrementing). UUIDs are unguessable, globally unique, and client-generated — the frontend can assign an ID before the POST request even reaches the server.',
+          'Why ownership checks (\'WHERE user_id = $1\') in every query? — This is defense in depth. Even if a bug allows a user to access another user\'s task (broken auth, misconfigured middleware), the database query itself enforces ownership. The WHERE clause is the last line of defense that cannot be bypassed by client-side manipulation.',
+          'Why filtering via query parameters instead of a /search endpoint? — GET /tasks is the canonical endpoint for retrieving tasks. Filtering via query parameters (/tasks?status=done&priority=high) keeps the API surface small and intuitive. A separate /search endpoint would duplicate routing, validation, and auth logic for no benefit.'
+        ]
+      },
+      {
+        type: 'heading',
+        text: 'Extensions: Growing This Project'
+      },
+      {
+        type: 'text',
+        text: 'This API is deliberately minimal — a solid foundation, not a finished product. Here\'s a roadmap of features you can add, each building on what you already have:'
+      },
+      {
+        type: 'heading',
+        text: 'Extension 1: Pagination'
+      },
+      {
+        type: 'text',
+        text: 'Returning every task a user has ever created will eventually break. Pagination limits results and allows clients to request specific pages. The cursor-based approach is more reliable than offset-based for data that changes frequently.'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// Add pagination to GET /tasks
+fastify.get('/tasks', {
+  schema: {
+    querystring: {
+      type: 'object',
+      properties: {
+        status: { enum: ['todo', 'in-progress', 'done'] },
+        priority: { enum: ['low', 'medium', 'high'] },
+        search: { type: 'string' },
+        limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+        cursor: { type: 'string' }, // ID of the last item from the previous page
+      }
+    }
+  }
+}, async (request) => {
+  const { status, priority, search, limit, cursor } = request.query;
+  let query = 'SELECT * FROM tasks WHERE user_id = $1';
+  const params = [request.user.sub];
+  let paramCount = 1;
+
+  if (status) { paramCount++; query += \` AND status = $\${paramCount}\`; params.push(status); }
+  if (priority) { paramCount++; query += \` AND priority = $\${paramCount}\`; params.push(priority); }
+  if (search) { paramCount++; query += \` AND title ILIKE $\${paramCount}\`; params.push(\`%\${search}%\`); }
+  if (cursor) { paramCount++; query += \` AND created_at < (SELECT created_at FROM tasks WHERE id = $\${paramCount})\`; params.push(cursor); }
+
+  query += \` ORDER BY created_at DESC LIMIT $\${++paramCount}\`;
+  params.push(limit + 1); // Fetch one extra to detect if there\'s a next page
+
+  const { rows } = await fastify.pg.query(query, params);
+  const hasMore = rows.length > limit;
+  const items = hasMore ? rows.slice(0, limit) : rows;
+
+  return {
+    data: items,
+    pagination: {
+      hasMore,
+      nextCursor: hasMore ? items[items.length - 1].id : null,
+      limit,
+    }
+  };
+});`
+      },
+      {
+        type: 'heading',
+        text: 'Extension 2: Batch Operations'
+      },
+      {
+        type: 'text',
+        text: 'Single-resource CRUD is fine for simple apps, but real applications need batch operations: mark multiple tasks as done, delete a selection of tasks, assign multiple tasks to a user. Batch operations must be atomic — all or nothing.'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// POST /tasks/batch — perform multiple task operations atomically
+fastify.post('/tasks/batch', {
+  schema: {
+    body: {
+      type: 'object',
+      required: ['operations'],
+      properties: {
+        operations: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['action', 'taskId'],
+            properties: {
+              action: { enum: ['complete', 'delete', 'update'] },
+              taskId: { type: 'string', format: 'uuid' },
+              data: {
+                type: 'object',
+                properties: {
+                  status: { enum: ['todo', 'in-progress', 'done'] },
+                  priority: { enum: ['low', 'medium', 'high'] },
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}, async (request, reply) => {
+  const { operations } = request.body;
+  const client = await fastify.pg.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const results = [];
+    for (const op of operations) {
+      const { rowCount } = await client.query(
+        'SELECT id FROM tasks WHERE id = $1 AND user_id = $2',
+        [op.taskId, request.user.sub]
+      );
+      if (rowCount === 0) {
+        throw fastify.httpErrors.notFound(\`Task \${op.taskId} not found\`);
+      }
+
+      switch (op.action) {
+        case 'complete':
+          await client.query(
+            'UPDATE tasks SET status = $1, updated_at = NOW() WHERE id = $2',
+            ['done', op.taskId]
+          );
+          break;
+        case 'delete':
+          await client.query('DELETE FROM tasks WHERE id = $1', [op.taskId]);
+          break;
+        case 'update':
+          await client.query(
+            'UPDATE tasks SET status = $1, priority = $2, updated_at = NOW() WHERE id = $3',
+            [op.data.status, op.data.priority, op.taskId]
+          );
+          break;
+      }
+      results.push({ taskId: op.taskId, action: op.action, success: true });
+    }
+
+    await client.query('COMMIT');
+    return { processed: operations.length, results };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+});`
+      },
+      {
+        type: 'heading',
+        text: 'Extension 3: WebSocket Real-Time Updates'
+      },
+      {
+        type: 'text',
+        text: 'REST is request-response: the client asks, the server answers. But what if you want the server to push updates to the client? WebSockets enable persistent, bidirectional connections.'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// Install @fastify/websocket
+// npm install @fastify/websocket
+
+import websocketPlugin from '@fastify/websocket';
+
+await fastify.register(websocketPlugin);
+
+// Maintain a set of connected clients
+const connections = new Set();
+
+fastify.register(async function (fastify) {
+  fastify.get('/ws/tasks', { websocket: true }, (socket, req) => {
+    // Verify authentication via query param or first message
+    connections.add(socket);
+
+    socket.on('message', (message) => {
+      const { type, data } = JSON.parse(message);
+      // Handle client messages (subscribe, unsubscribe, etc.)
+    });
+
+    socket.on('close', () => {
+      connections.delete(socket);
+    });
+  });
+});
+
+// In your task route handlers, broadcast changes:
+// After creating a task, notify all connected clients
+function broadcastTaskUpdate(task) {
+  const message = JSON.stringify({ type: 'task:created', data: task });
+  for (const socket of connections) {
+    socket.send(message);
+  }
+}
+
+// Now clients receive real-time updates:
+// { "type": "task:created", "data": { "id": "...", "title": "New Task" } }`
+      },
+      {
+        type: 'heading',
+        text: 'Extension 4: Soft Deletes and Audit Logging'
+      },
+      {
+        type: 'text',
+        text: 'Hard deletes (completely removing data) are permanent. Soft deletes (marking data as "deleted" with a timestamp while keeping it in the database) provide an undo mechanism and an audit trail.'
+      },
+      {
+        type: 'code',
+        lang: 'javascript',
+        code: `// Add soft delete support to the tasks table
+// Migration: ALTER TABLE tasks ADD COLUMN deleted_at TIMESTAMP;
+
+// Modified delete route — soft delete instead of hard delete
+fastify.delete('/tasks/:id', async (request, reply) => {
+  const { rowCount } = await fastify.pg.query(
+    'UPDATE tasks SET deleted_at = NOW(), updated_at = NOW() WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
+    [request.params.id, request.user.sub]
+  );
+  if (rowCount === 0) {
+    throw fastify.httpErrors.notFound('Task not found or already deleted');
+  }
+  reply.code(204);
+});
+
+// Add audit logging table
+// CREATE TABLE audit_log (
+//   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+//   user_id UUID NOT NULL,
+//   action VARCHAR(50) NOT NULL,
+//   resource_type VARCHAR(50) NOT NULL,
+//   resource_id UUID NOT NULL,
+//   changes JSONB,
+//   created_at TIMESTAMP DEFAULT NOW()
+// );
+
+// Add audit logging hook
+fastify.addHook('onResponse', async (request, reply) => {
+  if (reply.statusCode >= 200 && reply.statusCode < 300) {
+    // Log successful mutations
+    const actions = { POST: 'create', PUT: 'update', DELETE: 'delete' };
+    const action = actions[request.method];
+    if (action && request.user) {
+      await fastify.pg.query(
+        'INSERT INTO audit_log (user_id, action, resource_type, resource_id, changes) VALUES ($1, $2, $3, $4, $5)',
+        [request.user.sub, action, request.url.split('/')[2], request.params.id, JSON.stringify(request.body)]
+      );
+    }
+  }
+});`
+      },
+      {
+        type: 'heading',
+        text: 'Your Next Steps'
+      },
+      {
+        type: 'text',
+        text: 'This capstone has covered the full lifecycle of building a production-grade Fastify application: architecture design, authentication, CRUD operations with ownership enforcement, input validation, database integration with pooling and transactions, filtering and search, API documentation, and extension patterns for pagination, batch operations, real-time updates, and audit logging.'
+      },
+      {
+        type: 'text',
+        text: 'You now have the skills to build backend applications that handle real users, real data, and real scale. The patterns in this capstone — not the specific code, but the architectural thinking behind it — will serve you across any framework, any language, and any project. Fastify is your tool; what you\'ve learned here is your craft.'
+      },
+      {
+        type: 'note',
+        label: 'A final word on learning',
+        variant: 'tip',
+        text: 'The best way to internalize these patterns is to rebuild this project from scratch without looking at the solution. You\'ll get stuck. You\'ll make mistakes. That\'s the point. Every bug you fix, every architectural decision you wrestle with, cements the knowledge far deeper than reading ever could. Pick a domain you care about — recipes, workouts, movie collections — and build a Fastify API for it using these exact patterns. That project will teach you more than any tutorial.'
       }
     ],
     quiz: [

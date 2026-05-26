@@ -599,6 +599,49 @@ body {
   font-size: 0.93rem;
 }
 
+/* ─── Note Callouts ─── */
+.note {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  border-left: 4px solid;
+}
+
+.note-label {
+  font-weight: 700;
+}
+
+.note.info {
+  background: rgba(88, 166, 255, 0.08);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.note.info .note-label {
+  color: var(--accent);
+}
+
+.note.warning {
+  background: rgba(210, 153, 34, 0.08);
+  border-color: var(--orange);
+  color: var(--text);
+}
+
+.note.warning .note-label {
+  color: var(--orange);
+}
+
+.note.tip {
+  background: rgba(63, 185, 80, 0.08);
+  border-color: var(--green);
+  color: var(--text);
+}
+
+.note.tip .note-label {
+  color: var(--green);
+}
+
 /* ─── Code Block ─── */
 .code-block {
   position: relative;
